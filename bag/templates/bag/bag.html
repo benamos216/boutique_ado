@@ -24,7 +24,7 @@
         <div class="row">
             <div class="col">
                 {% if bag_items %}
-                    <div class="table-responsive-rounded">
+                    <div class="table-responsive rounded">
                         <table class="table table-sm table-borderless">
                             <thead class="text-black">
                                 <tr>
@@ -39,7 +39,7 @@
                             {% for item in bag_items %}
                                 <tr>
                                     <td class="p-3 w-25">
-                                        <img src="{{ item.product.image.url }}" class="img-fluid rounded">
+                                        <img class="img-fluid rounded" src="{{ item.product.image.url }}">
                                     </td>
                                     <td class="py-3">
                                         <p class="my-0"><strong>{{ item.product.name }}</strong></p>
@@ -49,22 +49,23 @@
                                     <td class="py-3">
                                         <p class="my-0">${{ item.product.price }}</p>
                                     </td>
-                                    <td class="py-3">
+                                    <td class="py-3 w-25">
                                         <form class="form update-form" method="POST" action="{% url 'adjust_bag' item.item_id %}">
                                             {% csrf_token %}
                                             <div class="form-group">
                                                 <div class="input-group">
                                                     <div class="input-group-prepend">
-                                                        <button class="decrement-qty btn btn-sm btn-black rounded-0"
+                                                        <button class="decrement-qty btn btn-sm btn-black rounded-0" 
                                                             data-item_id="{{ item.item_id }}" id="decrement-qty_{{ item.item_id }}">
                                                             <span>
                                                                 <i class="fas fa-minus fa-sm"></i>
                                                             </span>
                                                         </button>
                                                     </div>
-                                                    <input type="number" name="quantity" value="{{ item.quantity }}" min="1" max="99" 
-                                                        data-item_id="{{ item.item_id }}" id="id_qty_{{ item.item_id }}" 
-                                                        class="form-control form-control-sm qty_input">
+                                                    <input class="form-control form-control-sm qty_input" type="number"
+                                                        name="quantity" value="{{ item.quantity }}" min="1" max="99"
+                                                        data-item_id="{{ item.item_id }}"
+                                                        id="id_qty_{{ item.item_id }}">
                                                     <div class="input-group-append">
                                                         <button class="increment-qty btn btn-sm btn-black rounded-0"
                                                             data-item_id="{{ item.item_id }}" id="increment-qty_{{ item.item_id }}">
@@ -123,7 +124,7 @@
                         <span class="icon">
                             <i class="fas fa-chevron-left"></i>
                         </span>
-                        <span class="text-uppercase">Keep shopping</span>
+                        <span class="text-uppercase">Keep Shopping</span>
                     </a>
                 {% endif %}
             </div>
@@ -133,7 +134,7 @@
 
 {% block postloadjs %}
 {{ block.super }}
-{% include 'products/includes/quantity-input-script.html' %}
+{% include 'products/includes/quantity_input_script.html' %}
 
 <script type="text/javascript">
     // Update quantity on click
@@ -141,18 +142,19 @@
         var form = $(this).prev('.update-form');
         form.submit();
     })
+
     // Remove item and reload on click
     $('.remove-item').click(function(e) {
         var csrfToken = "{{ csrf_token }}";
         var itemId = $(this).attr('id').split('remove_')[1];
         var size = $(this).data('product_size');
-        var url = /bag/remove/$(itemId)/;
+        var url = `/bag/remove/${itemId}/`;
         var data = {'csrfmiddlewaretoken': csrfToken, 'product_size': size};
 
         $.post(url, data)
-          .done(function() {
-            location.reload();
-          });
+         .done(function() {
+             location.reload();
+         });
     })
 </script>
 {% endblock %}
